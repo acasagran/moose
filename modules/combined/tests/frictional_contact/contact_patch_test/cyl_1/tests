@@ -1,0 +1,58 @@
+[Tests]
+  [./cons_glued_kin]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_glued_kin.i'
+    csvdiff = 'cgs1_cyl1_cons_glued_kin_check.csv cgs1_cyl1_cons_glued_kin_check_cont_press_0001.csv cgs1_cyl1_cons_glued_kin_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_glued_pen]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_glued_pen.i'
+    csvdiff = 'cgs1_cyl1_cons_glued_pen_check.csv cgs1_cyl1_cons_glued_pen_check_cont_press_0001.csv cgs1_cyl1_cons_glued_pen_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_mu_0_kin]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_mu_0_kin.i'
+    csvdiff = 'cgs1_cyl1_cons_mu_0_kin_check.csv cgs1_cyl1_cons_mu_0_kin_check_cont_press_0001.csv cgs1_cyl1_cons_mu_0_kin_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_mu_0_pen]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_mu_0_pen.i'
+    csvdiff = 'cgs1_cyl1_cons_mu_0_pen_check.csv cgs1_cyl1_cons_mu_0_pen_check_cont_press_0001.csv cgs1_cyl1_cons_mu_0_pen_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_mu_0_aug]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_mu_0_aug.i'
+    csvdiff = 'cgs1_cyl1_cons_mu_0_aug_check.csv cgs1_cyl1_cons_mu_0_aug_check_cont_press_0001.csv cgs1_cyl1_cons_mu_0_aug_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_mu_0_2_kin]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_mu_0_2_kin.i'
+    csvdiff = 'cgs1_cyl1_cons_mu_0_2_kin_check.csv cgs1_cyl1_cons_mu_0_2_kin_check_cont_press_0001.csv cgs1_cyl1_cons_mu_0_2_kin_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+  [./cons_mu_0_2_pen]
+    type = 'CSVDiff'
+    input = 'cgs1_cyl1_cons_mu_0_2_pen.i'
+    csvdiff = 'cgs1_cyl1_cons_mu_0_2_pen_check.csv cgs1_cyl1_cons_mu_0_2_pen_check_cont_press_0001.csv cgs1_cyl1_cons_mu_0_2_pen_check_x_disp_0001.csv'
+    rel_err = 1e-5
+    abs_zero = 1e-8
+    max_parallel = 1
+  [../]
+[]
