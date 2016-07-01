@@ -12,6 +12,7 @@
 #include "Assembly.h"
 #include "MooseMesh.h"
 #include "FrictionalContactProblem.h"
+#include "Executioner.h"
 
 // libMesh includes
 #include "libmesh/string_to_enum.h"
@@ -162,9 +163,16 @@ MechanicalContactConstraint::updateContactSet(bool beginning_of_step)
       pinfo->_starting_elem = it->second->_elem;
       pinfo->_starting_side_num = it->second->_side_num;
       pinfo->_starting_closest_point_ref = it->second->_closest_point_ref;
-      pinfo->_contact_force_old = pinfo->_contact_force;
-      pinfo->_accumulated_slip_old = pinfo->_accumulated_slip;
-      pinfo->_frictional_energy_old = pinfo->_frictional_energy;
+      if (_app.getExecutioner()->lastSolveConverged() && _t_step >= 2) {
+        pinfo->_contact_force_old = pinfo->_contact_force;
+        pinfo->_accumulated_slip_old = pinfo->_accumulated_slip;
+        pinfo->_frictional_energy_old = pinfo->_frictional_energy;
+      } else {
+        pinfo->_mech_status = PenetrationInfo::MS_NO_CONTACT;
+        pinfo->_contact_force.zero();
+        pinfo->_accumulated_slip = 0;
+        pinfo->_frictional_energy = 0;
+      }
       pinfo->_lagrange_multiplier = 0;
       if (pinfo->isCaptured() && _model == CM_COULOMB)
         pinfo ->_mech_status_old = PenetrationInfo::MS_STICKING;
@@ -173,7 +181,10 @@ MechanicalContactConstraint::updateContactSet(bool beginning_of_step)
     if (pinfo->_mech_status == PenetrationInfo::MS_SLIPPING &&
         pinfo->_mech_status_old != PenetrationInfo::MS_SLIPPING)
       ++pinfo->_stick_locked_this_step;
-    pinfo->_mech_status_old = pinfo->_mech_status;
+
+      if (_app.getExecutioner()->lastSolveConverged() && _t_step >= 2) {
+        pinfo->_mech_status_old = pinfo->_mech_status;
+      }
 
     const Real contact_pressure = -(pinfo->_normal * pinfo->_contact_force) / nodalArea(*pinfo);
     const Real distance = pinfo->_normal * (pinfo->_closest_point - _mesh.nodeRef(slave_node_num));
