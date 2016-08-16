@@ -50,6 +50,7 @@ InputParameters validParams<MechanicalContactConstraint>()
   params.addParam<bool>("non_displacement_variables_jacobian", true, "Whether to include jacobian entries coupling with variables that are not displacement variables.");
   params.addParam<unsigned int>("stick_lock_iterations", std::numeric_limits<unsigned int>::max(), "Number of times permitted to switch between sticking and slipping in a solution before locking node in a sticked state.");
   params.addParam<Real>("stick_unlock_factor", 1.5, "Factor by which frictional capacity must be exceeded to permit stick-locked node to slip again.");
+  params.addParam<int>("debug", 0, "Debugging output flag: 0 = no output (default), 1 = method calls, 2 = method and variables");
   return params;
 }
 
@@ -77,8 +78,12 @@ MechanicalContactConstraint::MechanicalContactConstraint(const InputParameters &
     _aux_solution(_aux_system.currentSolution()),
     _master_slave_jacobian(getParam<bool>("master_slave_jacobian")),
     _connected_slave_nodes_jacobian(getParam<bool>("connected_slave_nodes_jacobian")),
-    _non_displacement_vars_jacobian(getParam<bool>("non_displacement_variables_jacobian"))
+    _non_displacement_vars_jacobian(getParam<bool>("non_displacement_variables_jacobian")),
+    _dbgflg(getParam<int>("debug"))
 {
+   if(_dbgflg > 0) { 
+     _console << "MechanicalContactConstraint: Entering constructor" << std::endl;
+   }
   _overwrite_slave_residual = false;
 
   if (parameters.isParamValid("tangential_tolerance"))
@@ -126,16 +131,26 @@ MechanicalContactConstraint::MechanicalContactConstraint(const InputParameters &
 void
 MechanicalContactConstraint::timestepSetup()
 {
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:timestepSetup" << std::endl;
+  }
   if (_component == 0)
   {
     updateContactSet(true);
     _update_contact_set = false;
+  }
+  if(_dbgflg > 1) { 
+    _console << "timestepSetup: _dt = " << _dt << std::endl;
+    _console << "timestepSetup: _dt_old = " << _dt_old << std::endl;
   }
 }
 
 void
 MechanicalContactConstraint::jacobianSetup()
 {
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:jacobianSetup" << std::endl;
+  }
   if (_component == 0)
   {
     if (_update_contact_set)
@@ -147,6 +162,9 @@ MechanicalContactConstraint::jacobianSetup()
 void
 MechanicalContactConstraint::updateContactSet(bool beginning_of_step)
 {
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:updateContactSet" << std::endl;
+  }
   std::map<dof_id_type, PenetrationInfo *>::iterator
     it  = _penetration_locator._penetration_info.begin(),
     end = _penetration_locator._penetration_info.end();
@@ -161,6 +179,9 @@ MechanicalContactConstraint::updateContactSet(bool beginning_of_step)
 
     if (beginning_of_step)
     {
+      if(_dbgflg > 1) { 
+        _console << "updateContactSet: In beginning of step section" << std::endl;
+      }
       pinfo->_locked_this_step = 0;
       pinfo->_stick_locked_this_step = 0;
       pinfo->_starting_elem = it->second->_elem;
@@ -179,8 +200,27 @@ MechanicalContactConstraint::updateContactSet(bool beginning_of_step)
       ++pinfo->_stick_locked_this_step;
     pinfo->_mech_status_old = pinfo->_mech_status;
 
+    if(_dbgflg > 1) { 
+      _console << "updateContactSet: slave_node_num = " << slave_node_num << std::endl;
+      _console << "updateContactSet: pinfo->_mech_status = " << pinfo->_mech_status << std::endl;
+      _console << "updateContactSet: pinfo->_mech_status_old = " << pinfo->_mech_status_old << std::endl;
+      _console << "updateContactSet: pinfo->_contact_force = " << pinfo->_contact_force << std::endl;
+      _console << "updateContactSet: pinfo->_contact_force_old = " << pinfo->_contact_force_old << std::endl;
+      _console << "updateContactSet: pinfo->_accumulated_slip = " << pinfo->_accumulated_slip << std::endl;
+      _console << "updateContactSet: pinfo->_accumulated_slip_old = " << pinfo->_accumulated_slip_old << std::endl;
+      _console << "updateContactSet: pinfo->_frictional_energy = " << pinfo->_frictional_energy << std::endl;
+      _console << "updateContactSet: pinfo->_frictional_energy_old = " << pinfo->_frictional_energy_old << std::endl;
+      _console << "updateContactSet: pinfo->isCaptured() = " << pinfo->isCaptured() << std::endl;
+      _console << "updateContactSet: pinfo->_stick_locked_this_step = " << pinfo->_stick_locked_this_step << std::endl;
+      _console << "updateContactSet: pinfo->_starting_closest_point_ref = " << pinfo->_starting_closest_point_ref << std::endl;
+    }
+
     const Real contact_pressure = -(pinfo->_normal * pinfo->_contact_force) / nodalArea(*pinfo);
     const Real distance = pinfo->_normal * (pinfo->_closest_point - _mesh.nodeRef(slave_node_num));
+    if(_dbgflg > 1) { 
+      _console << "updateContactSet: contact_pressure = " << contact_pressure << std::endl;
+      _console << "updateContactSet: distance = " << distance << std::endl;
+    }
 
     // Capture
     if ( ! pinfo->isCaptured() && MooseUtils::absoluteFuzzyGreaterEqual(distance, 0, _capture_tolerance))
@@ -235,6 +275,9 @@ void
 MechanicalContactConstraint::computeContactForce(PenetrationInfo * pinfo)
 {
   const Node * node = pinfo->_node;
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:computeContactForce" << std::endl;
+  }
 
   RealVectorValue res_vec;
   // Build up residual vector
@@ -401,6 +444,9 @@ MechanicalContactConstraint::computeContactForce(PenetrationInfo * pinfo)
       {
         case CF_KINEMATIC:
           pinfo->_contact_force =  -res_vec;
+          if(_dbgflg > 1) { 
+            _console << "computeContactForce:Glued,Kin pinfo->_contact_force = " << pinfo->_contact_force << std::endl;
+          }
           break;
         case CF_PENALTY:
           pinfo->_contact_force = pen_force;
@@ -443,7 +489,12 @@ MechanicalContactConstraint::computeQpResidual(Moose::ConstraintType type)
         RealVectorValue pen_force(penalty * distance_vec);
 
         if (_model == CM_FRICTIONLESS)
+        {
           resid += pinfo->_normal(_component) * pinfo->_normal * pen_force;
+          if(_dbgflg > 1) { 
+            _console << "computeQpResidual: Frictionless resid = " << resid << std::endl;
+          }
+        }
 
         else if (_model == CM_COULOMB)
         {
@@ -454,9 +505,17 @@ MechanicalContactConstraint::computeQpResidual(Moose::ConstraintType type)
             resid += pinfo->_normal(_component) * pinfo->_normal * pen_force;
           else
             resid += pen_force(_component);
+            if(_dbgflg > 1) { 
+              _console << "computeQpResidual: Coulomb resid = " << resid << std::endl;
+            }
         }
         else if (_model == CM_GLUED || _model == CM_COULOMB_MP)
+        {
           resid += pen_force(_component);
+          if(_dbgflg > 1) { 
+            _console << "computeQpResidual: Glued resid = " << resid << std::endl;
+          }
+        }
 
       }
       else if (_formulation == CF_TANGENTIAL_PENALTY && _model == CM_COULOMB)
@@ -1120,6 +1179,9 @@ MechanicalContactConstraint::computeJacobian()
 void
 MechanicalContactConstraint::computeOffDiagJacobian(unsigned int jvar)
 {
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:computeOffDiagJacobian" << std::endl;
+  }
   getConnectedDofIndices(jvar);
 
   _Kee.resize(_test_slave.size(), _connected_dof_indices.size());
@@ -1155,6 +1217,9 @@ void
 MechanicalContactConstraint::getConnectedDofIndices(unsigned int var_num)
 {
   unsigned int component;
+  if(_dbgflg > 0) { 
+    _console << "MechanicalContactConstraint:getConnectedDofIndices" << std::endl;
+  }
   if (getCoupledVarComponent(var_num,component) || _non_displacement_vars_jacobian)
   {
     if (_master_slave_jacobian && _connected_slave_nodes_jacobian)

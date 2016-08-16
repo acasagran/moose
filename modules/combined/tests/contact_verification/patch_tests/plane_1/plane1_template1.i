@@ -7,6 +7,7 @@
   type = ReferenceResidualProblem
   solution_variables = 'disp_x disp_y'
   reference_residual_variables = 'saved_x saved_y'
+#  debug = 2
 []
 
 [Variables]
@@ -311,5 +312,6 @@
     normalize_penalty = true
     tangential_tolerance = 1e-3
     penalty = 1e+9
+#    debug = 2
   [../]
 []

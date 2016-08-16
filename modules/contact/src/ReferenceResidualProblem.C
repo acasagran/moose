@@ -19,12 +19,17 @@ InputParameters validParams<ReferenceResidualProblem>()
   params.addParam<std::vector<std::string> >("reference_residual_variables","Set of variables that provide reference residuals for relative convergence check");
   params.addParam<Real>("acceptable_multiplier",1.0,"Multiplier applied to relative tolerance for acceptable limit");
   params.addParam<int>("acceptable_iterations",0,"Iterations after which convergence to acceptable limits is accepted");
+  params.addParam<int>("debug", 0, "Debugging output flag: 0 = no output (default), 1 = method calls, 2 = method and variables");
   return params;
 }
 
 ReferenceResidualProblem::ReferenceResidualProblem(const InputParameters & params) :
-    FEProblem(params)
+    FEProblem(params),
+    _dbgflg(getParam<int>("debug"))
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem: Entering constructor" << std::endl;
+   }
   if (params.isParamValid("solution_variables"))
     _solnVarNames = params.get<std::vector<std::string> >("solution_variables");
   if (params.isParamValid("reference_residual_variables"))
@@ -46,6 +51,9 @@ ReferenceResidualProblem::~ReferenceResidualProblem()
 void
 ReferenceResidualProblem::initialSetup()
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem:initialSetup" << std::endl;
+   }
   NonlinearSystem & nonlinear_sys = getNonlinearSystem();
   AuxiliarySystem & aux_sys = getAuxiliarySystem();
   TransientNonlinearImplicitSystem &s = nonlinear_sys.sys();
@@ -100,6 +108,9 @@ ReferenceResidualProblem::initialSetup()
 void
 ReferenceResidualProblem::timestepSetup()
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem:timestepSetup" << std::endl;
+   }
   for (unsigned int i=0; i<_refResid.size(); ++i)
   {
     _refResid[i] = 0.0;
@@ -111,6 +122,9 @@ ReferenceResidualProblem::timestepSetup()
 void
 ReferenceResidualProblem::updateReferenceResidual()
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem:updateReferenceResidual" << std::endl;
+   }
   NonlinearSystem & nonlinear_sys = getNonlinearSystem();
   AuxiliarySystem & aux_sys = getAuxiliarySystem();
   TransientNonlinearImplicitSystem &s = nonlinear_sys.sys();
@@ -137,6 +151,9 @@ ReferenceResidualProblem::checkNonlinearConvergence(std::string &msg,
                                                     const Real ref_resid,
                                                     const Real /*div_threshold*/)
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem:checkNonlinearConvergence" << std::endl;
+   }
   updateReferenceResidual();
 
   if (_solnVars.size() > 0)
@@ -226,6 +243,9 @@ ReferenceResidualProblem::checkConvergenceIndividVars(const Real fnorm,
                                                       const Real rtol,
                                                       const Real ref_resid)
 {
+   if(_dbgflg > 0) { 
+   _console << "ReferenceResidualProblem:checkConvergenceIndividVars" << std::endl;
+   }
   bool convergedRelative = true;
   if (_resid.size() > 0)
   {

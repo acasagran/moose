@@ -242,6 +242,7 @@
     penalty = 1e12
     normalize_penalty = true
     tangential_tolerance = 1e-3
+#    debug = 2
   [../]
 []
 

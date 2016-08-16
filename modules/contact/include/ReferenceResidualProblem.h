@@ -73,6 +73,7 @@ protected:
   std::vector<Real> _refResid;
   std::vector<Real> _resid;
   ///@}
+  int _dbgflg;
 };
 
 #endif /* REFERENCERESIDUALPROBLEM_H */

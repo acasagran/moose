@@ -122,6 +122,7 @@ protected:
   const bool _connected_slave_nodes_jacobian;
   /// Whether to include coupling terms with non-displacement variables in the Jacobian
   const bool _non_displacement_vars_jacobian;
+  int _dbgflg;
 };
 
 #endif
