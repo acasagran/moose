@@ -45,13 +45,13 @@ IsotropicPowerLawHardeningStressUpdate::IsotropicPowerLawHardeningStressUpdate(
 
 void
 IsotropicPowerLawHardeningStressUpdate::computeStressInitialize(
-    Real effectiveTrialStress, const RankFourTensor & elasticity_tensor)
+    Real effective_trial_stress, const RankFourTensor & elasticity_tensor)
 {
   _shear_modulus = ElasticityTensorTools::getIsotropicShearModulus(elasticity_tensor);
   computeYieldStress(elasticity_tensor);
 
-  _effective_trial_stress = effectiveTrialStress;
-  _yield_condition = effectiveTrialStress - _hardening_variable_old[_qp] - _yield_stress;
+  _effective_trial_stress = effective_trial_stress;
+  _yield_condition = effective_trial_stress - _hardening_variable_old[_qp] - _yield_stress;
 
   _hardening_variable[_qp] = _hardening_variable_old[_qp];
   _plastic_strain[_qp] = _plastic_strain_old[_qp];

@@ -346,8 +346,28 @@ SingleVariableReturnMappingSolution::outputIterInfo(std::stringstream * iter_out
 {
   if (iter_output)
   {
-    *iter_output << " it=" << it << " trl_strs=" << effective_trial_stress << " scalar=" << scalar
-                 << " residual=" << residual << " ref_res=" << reference_residual
+    //     *iter_output << "In the element " << Moose::stringify(_current_elem->id())
+    //                  << " and the qp point " << _qp << ": \n" << "  iteration = " <<
+    //                  it << "\n" << " effective trial stress = " << effective_trial_stress
+    //                  << "\n" << " scalar effective inelastic strain = " << scalar <<
+    //                   "\n" << " relative residual = " <<
+    //
+    //
+    //             Moose::stringify(_qp) + ": \n" + +" iteration = " + Moose::stringify(iteration) +
+    //             "\n" +
+    //             +" effective trial stress = " + Moose::stringify(effective_trial_stress) + "\n" +
+    //             +" scalar effective inelastic strain = " +
+    //             Moose::stringify(scalar_effective_inelastic_strain) + "\n" + +" relative residual
+    //             = " +
+    //             Moose::stringify(norm_residual / first_norm_residual) + "\n" +
+    //             +" relative tolerance = " + Moose::stringify(_relative_tolerance) + "\n" +
+    //             +" absolute residual = " + Moose::stringify(norm_residual) + "\n" +
+    //             +" absolute tolerance = " + Moose::stringify(_absolute_tolerance) + "\n";
+    // iteration_output += "\n";
+
+    *iter_output << " iteration=" << it << " trial_stress=" << effective_trial_stress
+                 << " scalar=" << scalar << " residual=" << residual
+                 << " ref_res=" << reference_residual
                  << " rel_res=" << std::abs(residual) / reference_residual
                  << " rel_tol=" << _relative_tolerance << " abs_res=" << std::abs(residual)
                  << " abs_tol=" << _absolute_tolerance << std::endl;

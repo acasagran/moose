@@ -33,7 +33,7 @@ public:
   IsotropicPowerLawHardeningStressUpdate(const InputParameters & parameters);
 
 protected:
-  virtual void computeStressInitialize(Real effectiveTrialStress,
+  virtual void computeStressInitialize(Real effective_trial_stress,
                                        const RankFourTensor & elasticity_tensor) override;
   virtual void computeYieldStress(const RankFourTensor & elasticity_tensor) override;
   virtual Real computeHardeningDerivative(Real scalar) override;
@@ -43,8 +43,10 @@ protected:
   Real _strain_hardening_exponent;
   ///@}
 
-  /// Elastic constant
+  ///@{ Elastic constants
   Real _youngs_modulus;
+  Real _shear_modulus;
+  ///@}
 
   ///
   Real _effective_trial_stress;
