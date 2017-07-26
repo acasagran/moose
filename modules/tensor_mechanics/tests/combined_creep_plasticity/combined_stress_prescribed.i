@@ -49,6 +49,7 @@
 
 [GlobalParams]
   displacements = 'disp_x disp_y disp_z'
+  volumetric_locking_correction = true
 []
 
 [Modules/TensorMechanics/Master]
@@ -76,19 +77,19 @@
     function = pressure
   [../]
   [./u_bottom_fix]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_y
     boundary = bottom
     value = 0.0
   [../]
   [./u_yz_fix]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_x
     boundary = left
     value = 0.0
   [../]
   [./u_xy_fix]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_z
     boundary = back
     value = 0.0
@@ -105,8 +106,8 @@
     type = ComputeMultipleInelasticStress
     inelastic_models = 'creep plas'
     tangent_operator = elastic
-    max_iterations = 50
-    absolute_tolerance = 1e-05
+    #absolute_tolerance = 1e-05
+    #relative_tolerance = 1e-05
   [../]
   [./creep]
     type = PowerLawCreepStressUpdate
@@ -114,34 +115,33 @@
     n_exponent = 4
     m_exponent = 0
     activation_energy = 0
+    #absolute_tolerance = 1e-5
+    #relative_tolerance = 1e-5
   [../]
   [./plas]
     type = IsotropicPlasticityStressUpdate
     hardening_constant = 1
     yield_stress = 1e30
+    #absolute_tolerance = 1e-5
+    #relative_tolerance = 1e-5
   [../]
 []
 
 [Executioner]
   type = Transient
 
-  #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
 
-
-  petsc_options = '-snes_ksp_ew'
-  petsc_options_iname = '-ksp_gmres_restart -pc_type -sub_pc_type'
-  petsc_options_value = '101           asm      lu'
-
+  petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+  petsc_options_value = ' lu       superlu_dist'
 
   line_search = 'none'
 
-
-  l_max_its = 20
-  nl_max_its = 20
-  nl_rel_tol = 1e-5
-  nl_abs_tol = 1e-5
-  l_tol = 1e-5
+  l_max_its = 100
+  nl_max_its = 100
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-8
+  l_tol = 1e-6
   start_time = 0.0
   end_time = 32400
   dt = 1e-2

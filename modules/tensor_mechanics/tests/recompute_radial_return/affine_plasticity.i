@@ -302,9 +302,8 @@
     type = IsotropicPlasticityStressUpdate
     yield_stress = 285788383.2488647 # = sqrt(3)*165e6 = sqrt(3) * yield in shear
     hardening_constant = 0.0
-    relative_tolerance = 1e-14 #1e-10
-    absolute_tolerance = 1e-30 #1e-12
-    max_iterations = 50
+    #relative_tolerance = 1e-14 #1e-10
+    #absolute_tolerance = 1e-30 #1e-12
   [../]
   [./radial_return_stress]
     type = ComputeMultipleInelasticStress

@@ -101,9 +101,8 @@
     coefficient = 1.0e-15
     n_exponent = 4
     activation_energy = 3.0e5
-    relative_tolerance = 1e-10
-    absolute_tolerance = 1e-12
-    max_iterations = 50
+    #relative_tolerance = 1e-10
+    #absolute_tolerance = 1e-12
     temperature = temp
   [../]
 

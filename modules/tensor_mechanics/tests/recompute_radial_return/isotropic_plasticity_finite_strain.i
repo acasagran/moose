@@ -44,28 +44,26 @@
 
 [BCs]
   [./y_pull_function]
-    type = FunctionDirichletBC
+    type = FunctionPresetBC
     variable = disp_y
     boundary = 5
     function = top_pull
   [../]
 
   [./x_bot]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_x
     boundary = 4
     value = 0.0
   [../]
-
   [./y_bot]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_y
     boundary = 3
     value = 0.0
   [../]
-
   [./z_bot]
-    type = DirichletBC
+    type = PresetBC
     variable = disp_z
     boundary = 2
     value = 0.0
@@ -82,9 +80,8 @@
     type = IsotropicPlasticityStressUpdate
     yield_stress = 50.0
     hardening_function = hf
-    relative_tolerance = 1e-10
-    absolute_tolerance = 1e-12
-    max_iterations = 50
+    #relative_tolerance = 1e-10
+    #absolute_tolerance = 1e-12
   [../]
   [./radial_return_stress]
     type = ComputeMultipleInelasticStress
@@ -96,7 +93,6 @@
 [Executioner]
   type = Transient
 
-  #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
 
   petsc_options = '-snes_ksp_ew'

@@ -14,9 +14,9 @@
   displacements = 'disp_x disp_y'
 []
 
-[Mesh]#Comment
+[Mesh]
   file = one_elem2.e
-[] # Mesh
+[]
 
 [Variables]
   [./disp_x]
@@ -303,8 +303,7 @@
     n_exponent = 5.0
     m_exponent = 0.0
     activation_energy = 0.0
-    max_iterations = 100
-    relative_tolerance = 1e-5
+    #relative_tolerance = 1e-5
   [../]
 
   [./thermal]
@@ -319,16 +318,15 @@
     block = 1
     density = 1.0
   [../]
-[] # Materials
+[]
 
 [Executioner]
   type = Transient
-  #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
 
   nl_rel_tol = 1e-10
   nl_abs_tol = 1e-12
-  l_tol = 1e-4
+  l_tol = 1e-6
   l_max_its = 100
   nl_max_its = 20
 
@@ -336,7 +334,7 @@
   start_time = 0.0
   num_steps = 100
   end_time = 2.0
-[] # Executioner
+[]
 
 [Postprocessors]
   [./stress_xx]
@@ -430,10 +428,9 @@
 
 [Outputs]
   exodus = true
-  csv = true
   [./console]
     type = Console
     perf_log = true
     output_linear = true
   [../]
-[] # Outputs
+[]
