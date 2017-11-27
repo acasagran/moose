@@ -37,6 +37,7 @@
 #include "WeakPlaneStress.h"
 #include "PlasticHeatEnergy.h"
 #include "PhaseFieldFractureMechanicsOffDiag.h"
+#include "StressDivergenceTensorsBeam.h"
 
 #include "LinearElasticTruss.h"
 #include "FiniteStrainPlasticMaterial.h"
@@ -124,6 +125,10 @@
 #include "AbruptSoftening.h"
 #include "ExponentialSoftening.h"
 #include "PowerLawSoftening.h"
+#include "ComputeIncrementalBeamStrain.h"
+#include "ComputeFiniteBeamStrain.h"
+#include "ComputeElasticityBeam.h"
+#include "ComputeBeamForces.h"
 
 #include "TensorMechanicsPlasticSimpleTester.h"
 #include "TensorMechanicsPlasticTensile.h"
@@ -273,6 +278,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerKernel(WeakPlaneStress);
   registerKernel(PlasticHeatEnergy);
   registerKernel(PhaseFieldFractureMechanicsOffDiag);
+  registerKernel(StressDivergenceTensorsBeam);
 
   registerMaterial(LinearElasticTruss);
   registerMaterial(FiniteStrainPlasticMaterial);
@@ -363,6 +369,10 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerMaterial(ExponentialSoftening);
   registerMaterial(PowerLawSoftening);
   registerMaterial(StrainEnergyDensity);
+  registerMaterial(ComputeIncrementalBeamStrain);
+  registerMaterial(ComputeFiniteBeamStrain);
+  registerMaterial(ComputeElasticityBeam);
+  registerMaterial(ComputeBeamForces);
 
   registerUserObject(TensorMechanicsPlasticSimpleTester);
   registerUserObject(TensorMechanicsPlasticTensile);
