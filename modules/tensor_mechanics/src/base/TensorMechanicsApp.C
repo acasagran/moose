@@ -38,6 +38,7 @@
 #include "PlasticHeatEnergy.h"
 #include "PhaseFieldFractureMechanicsOffDiag.h"
 #include "StressDivergenceTensorsBeam.h"
+#include "InertialForceBeam.h"
 
 #include "LinearElasticTruss.h"
 #include "FiniteStrainPlasticMaterial.h"
@@ -218,6 +219,8 @@
 #include "ThermalFractureIntegral.h"
 #include "StrainEnergyDensity.h"
 
+#include "NodalInertialForce.h"
+#include "NodalInertialTorque.h"
 template <>
 InputParameters
 validParams<TensorMechanicsApp>()
@@ -279,6 +282,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerKernel(PlasticHeatEnergy);
   registerKernel(PhaseFieldFractureMechanicsOffDiag);
   registerKernel(StressDivergenceTensorsBeam);
+  registerKernel(InertialForceBeam);
 
   registerMaterial(LinearElasticTruss);
   registerMaterial(FiniteStrainPlasticMaterial);
@@ -450,6 +454,9 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerVectorPostprocessor(CrackDataSampler);
 
   registerDamper(ElementJacobianDamper);
+
+  registerNodalKernel(NodalInertialForce);
+  registerNodalKernel(NodalInertialTorque);
 }
 
 // External entry point for dynamic syntax association
