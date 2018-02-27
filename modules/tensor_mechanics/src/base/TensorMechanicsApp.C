@@ -37,7 +37,7 @@
 #include "WeakPlaneStress.h"
 #include "PlasticHeatEnergy.h"
 #include "PhaseFieldFractureMechanicsOffDiag.h"
-#include "StressDivergenceTensorsBeam.h"
+#include "StressDivergenceBeam.h"
 #include "InertialForceBeam.h"
 
 #include "LinearElasticTruss.h"
@@ -129,7 +129,7 @@
 #include "ComputeIncrementalBeamStrain.h"
 #include "ComputeFiniteBeamStrain.h"
 #include "ComputeElasticityBeam.h"
-#include "ComputeBeamForces.h"
+#include "ComputeBeamResultants.h"
 
 #include "TensorMechanicsPlasticSimpleTester.h"
 #include "TensorMechanicsPlasticTensile.h"
@@ -219,8 +219,9 @@
 #include "ThermalFractureIntegral.h"
 #include "StrainEnergyDensity.h"
 
-#include "NodalInertialForce.h"
-#include "NodalInertialTorque.h"
+#include "NodalTranslationalInertia.h"
+#include "NodalRotationalInertia.h"
+
 template <>
 InputParameters
 validParams<TensorMechanicsApp>()
@@ -281,7 +282,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerKernel(WeakPlaneStress);
   registerKernel(PlasticHeatEnergy);
   registerKernel(PhaseFieldFractureMechanicsOffDiag);
-  registerKernel(StressDivergenceTensorsBeam);
+  registerKernel(StressDivergenceBeam);
   registerKernel(InertialForceBeam);
 
   registerMaterial(LinearElasticTruss);
@@ -376,7 +377,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerMaterial(ComputeIncrementalBeamStrain);
   registerMaterial(ComputeFiniteBeamStrain);
   registerMaterial(ComputeElasticityBeam);
-  registerMaterial(ComputeBeamForces);
+  registerMaterial(ComputeBeamResultants);
 
   registerUserObject(TensorMechanicsPlasticSimpleTester);
   registerUserObject(TensorMechanicsPlasticTensile);
@@ -455,8 +456,8 @@ TensorMechanicsApp::registerObjects(Factory & factory)
 
   registerDamper(ElementJacobianDamper);
 
-  registerNodalKernel(NodalInertialForce);
-  registerNodalKernel(NodalInertialTorque);
+  registerNodalKernel(NodalTranslationalInertia);
+  registerNodalKernel(NodalRotationalInertia);
 }
 
 // External entry point for dynamic syntax association
