@@ -130,6 +130,9 @@
 #include "ComputeFiniteBeamStrain.h"
 #include "ComputeElasticityBeam.h"
 #include "ComputeBeamResultants.h"
+#include "ComputeBeamEigenstrainFromAuxVar.h"
+#include "ComputeBeamEigenstrainFromVPP.h"
+#include "ComputeBeamThermalExpansionEigenstrain.h"
 
 #include "TensorMechanicsPlasticSimpleTester.h"
 #include "TensorMechanicsPlasticTensile.h"
@@ -160,6 +163,7 @@
 #include "HEVPEqvPlasticStrainRate.h"
 #include "HEVPFlowRatePowerLawJ2.h"
 #include "LinearViscoelasticityManager.h"
+#include "VectorPostprocessorToInterpolator.h"
 
 #include "AccumulateAux.h"
 #include "CrystalPlasticityRotationOutAux.h"
@@ -221,6 +225,8 @@
 
 #include "NodalTranslationalInertia.h"
 #include "NodalRotationalInertia.h"
+
+#include "VectorPostprocessorToAuxVar.h"
 
 template <>
 InputParameters
@@ -378,6 +384,9 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerMaterial(ComputeFiniteBeamStrain);
   registerMaterial(ComputeElasticityBeam);
   registerMaterial(ComputeBeamResultants);
+  registerMaterial(ComputeBeamEigenstrainFromAuxVar);
+  registerMaterial(ComputeBeamEigenstrainFromVPP);
+  registerMaterial(ComputeBeamThermalExpansionEigenstrain);
 
   registerUserObject(TensorMechanicsPlasticSimpleTester);
   registerUserObject(TensorMechanicsPlasticTensile);
@@ -415,6 +424,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerUserObject(GeneralizedPlaneStrainUserObject);
   registerUserObject(CrackFrontDefinition);
   registerUserObject(LinearViscoelasticityManager);
+  registerUserObject(VectorPostprocessorToInterpolator);
 
   registerAux(AccumulateAux);
   registerAux(CrystalPlasticityRotationOutAux);
@@ -458,6 +468,8 @@ TensorMechanicsApp::registerObjects(Factory & factory)
 
   registerNodalKernel(NodalTranslationalInertia);
   registerNodalKernel(NodalRotationalInertia);
+
+  registerTransfer(VectorPostprocessorToAuxVar);
 }
 
 // External entry point for dynamic syntax association
