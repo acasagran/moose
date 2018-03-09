@@ -19,6 +19,8 @@
 #include "PoroMechanicsAction.h"
 #include "PressureAction.h"
 #include "GeneralizedPlaneStrainAction.h"
+#include "CommonLineElementAction.h"
+#include "LineElementAction.h"
 
 #include "StressDivergenceTensors.h"
 #include "StressDivergenceTensorsTruss.h"
@@ -130,9 +132,9 @@
 #include "ComputeFiniteBeamStrain.h"
 #include "ComputeElasticityBeam.h"
 #include "ComputeBeamResultants.h"
-#include "ComputeBeamEigenstrainFromAuxVar.h"
-#include "ComputeBeamEigenstrainFromVPP.h"
-#include "ComputeBeamThermalExpansionEigenstrain.h"
+#include "ComputeEigenstrainBeamFromVariable.h"
+#include "ComputeEigenstrainBeamFromCSVInterpolator.h"
+#include "ComputeThermalExpansionEigenstrainBeam.h"
 
 #include "TensorMechanicsPlasticSimpleTester.h"
 #include "TensorMechanicsPlasticTensile.h"
@@ -163,7 +165,7 @@
 #include "HEVPEqvPlasticStrainRate.h"
 #include "HEVPFlowRatePowerLawJ2.h"
 #include "LinearViscoelasticityManager.h"
-#include "VectorPostprocessorToInterpolator.h"
+#include "CSVInterpolator.h"
 
 #include "AccumulateAux.h"
 #include "CrystalPlasticityRotationOutAux.h"
@@ -226,7 +228,7 @@
 #include "NodalTranslationalInertia.h"
 #include "NodalRotationalInertia.h"
 
-#include "VectorPostprocessorToAuxVar.h"
+#include "VectorPostprocessorTransfer.h"
 
 template <>
 InputParameters
@@ -384,9 +386,9 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerMaterial(ComputeFiniteBeamStrain);
   registerMaterial(ComputeElasticityBeam);
   registerMaterial(ComputeBeamResultants);
-  registerMaterial(ComputeBeamEigenstrainFromAuxVar);
-  registerMaterial(ComputeBeamEigenstrainFromVPP);
-  registerMaterial(ComputeBeamThermalExpansionEigenstrain);
+  registerMaterial(ComputeEigenstrainBeamFromVariable);
+  registerMaterial(ComputeEigenstrainBeamFromCSVInterpolator);
+  registerMaterial(ComputeThermalExpansionEigenstrainBeam);
 
   registerUserObject(TensorMechanicsPlasticSimpleTester);
   registerUserObject(TensorMechanicsPlasticTensile);
@@ -424,7 +426,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerUserObject(GeneralizedPlaneStrainUserObject);
   registerUserObject(CrackFrontDefinition);
   registerUserObject(LinearViscoelasticityManager);
-  registerUserObject(VectorPostprocessorToInterpolator);
+  registerUserObject(CSVInterpolator);
 
   registerAux(AccumulateAux);
   registerAux(CrystalPlasticityRotationOutAux);
@@ -469,7 +471,7 @@ TensorMechanicsApp::registerObjects(Factory & factory)
   registerNodalKernel(NodalTranslationalInertia);
   registerNodalKernel(NodalRotationalInertia);
 
-  registerTransfer(VectorPostprocessorToAuxVar);
+  registerTransfer(VectorPostprocessorTransfer);
 }
 
 // External entry point for dynamic syntax association
@@ -497,6 +499,9 @@ TensorMechanicsApp::associateSyntax(Syntax & syntax, ActionFactory & action_fact
                  "Modules/TensorMechanics/GeneralizedPlaneStrain/*");
   registerSyntax("CommonTensorMechanicsAction", "Modules/TensorMechanics/Master");
   registerSyntax("TensorMechanicsAction", "Modules/TensorMechanics/Master/*");
+
+  registerSyntax("CommonLineElementAction", "Modules/LineElement");
+  registerSyntax("LineElementAction", "Modules/LineElement/*");
 
   registerSyntaxTask("DomainIntegralAction", "DomainIntegral", "add_user_object");
   registerSyntaxTask("DomainIntegralAction", "DomainIntegral", "add_aux_variable");
@@ -546,6 +551,17 @@ TensorMechanicsApp::associateSyntax(Syntax & syntax, ActionFactory & action_fact
   registerAction(DomainIntegralAction, "add_aux_kernel");
   registerAction(DomainIntegralAction, "add_postprocessor");
   registerAction(DomainIntegralAction, "add_material");
+
+  registerAction(CommonLineElementAction, "meta_action");
+
+  registerAction(LineElementAction, "setup_mesh_complete");
+  registerAction(LineElementAction, "add_variable");
+  registerAction(LineElementAction, "add_aux_variable");
+  registerAction(LineElementAction, "add_kernel");
+  registerAction(LineElementAction, "add_material");
+  registerAction(LineElementAction, "add_aux_kernel");
+  registerAction(LineElementAction, "add_nodal_kernel");
+  registerAction(LineElementAction, "meta_action");
 }
 
 // External entry point for dynamic execute flag registration
