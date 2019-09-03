@@ -1,0 +1,12 @@
+[Tests]
+  [./aligned_loading]
+    type = 'CSVDiff'
+    input = 'aligned_load_2d.i'
+    csvdiff = 'aligned_load_2d_chk1_stress_xx_FINAL.csv aligned_load_2d_chk2_stress_yy_FINAL.csv'
+  [../]
+  [./inclined_loading]
+    type = 'CSVDiff'
+    input = 'inclined_load_2d.i'
+    csvdiff = 'inclined_load_2d_chk1_stress_xx_FINAL.csv inclined_load_2d_chk2_stress_yy_FINAL.csv inclined_load_2d_chk3_stress_norm_FINAL.csv inclined_load_2d_chk4_stress_tang_FINAL.csv'
+  [../]
+[]
