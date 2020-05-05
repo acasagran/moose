@@ -1,0 +1,19 @@
+reset
+title 'One element beam model'
+
+# Create beam
+create vertex 0 0.001 0
+create vertex 0 1.999 0
+create curve vertex 1 2
+
+block 1 curve 1
+block all elem bar2
+
+curve all interval 1
+
+nodeset 1001 vertex 1
+nodeset 1002 vertex 2
+
+mesh curve all
+
+export mesh 'beam_one_elem.e' overwrite
