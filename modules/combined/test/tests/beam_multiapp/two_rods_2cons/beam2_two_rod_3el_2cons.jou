@@ -1,0 +1,31 @@
+reset
+title 'Two beam model with two constraints between the beams'
+
+
+# Create beams with two constraints
+create vertex 0 0.001 0
+create vertex 0 0.5 0
+create vertex 0 1.00 0
+create vertex 0 1.999 0
+create curve vertex 1 2
+create curve vertex 2 3
+create curve vertex 3 4
+curve all copy move 0.05 0 0
+merge vertex all
+create curve vertex 2 8
+create curve vertex 3 10
+merge vertex 2 13
+merge vertex 3 15
+
+block 1 curve all
+block all elem bar2
+
+curve all interval 1
+mesh curve all
+
+nodeset 1001 node in curve all with y_coord<0.002
+nodeset 1002 node in curve all with y_coord>1.998
+nodeset 1003 node 6 7
+nodeset 1004 node 2 9 3 10
+
+export mesh 'beam2_two_rod_3el_2cons.e' overwrite

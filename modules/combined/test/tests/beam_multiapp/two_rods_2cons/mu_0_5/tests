@@ -1,0 +1,11 @@
+[Tests]
+  design = 'MultiAppCommandLineControl.md'
+  issues = '#xxx'
+  [beam_multiapp_two_rods_2cons_mu_0_5]
+    type = CSVDiff
+    input = multiapp_cons_mu_0_5.i
+    csvdiff = 'multiapp_cons_mu_0_5_out.csv'
+#    requirement = "The system shall be able to set command line parameter(s) for sub-application "
+#                  "that executes completely from a sample distribution for"
+  []
+[]

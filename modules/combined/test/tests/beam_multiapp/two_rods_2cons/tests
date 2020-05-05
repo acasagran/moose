@@ -1,0 +1,12 @@
+[Tests]
+  design = 'MultiAppCommandLineControl.md'
+  issues = '#xxx'
+  [beam_multiapp_two_rods_2cons]
+    type = CSVDiff
+    input = multiapp_two_rods_2cons.i
+    csvdiff = 'multiapp_two_rods_2cons_out_sub0_vec1_axial_str_FINAL.csv multiapp_two_rods_2cons_out_sub0_vec2_axial_disp_FINAL.csv multiapp_two_rods_2cons_out_sub1_vec1_axial_str_FINAL.csv multiapp_two_rods_2cons_out_sub1_vec2_axial_disp_FINAL.csv'
+    min_parallel = 2
+#    requirement = "The system shall be able to set command line parameter(s) for sub-application "
+#                  "that executes completely from a sample distribution for"
+  []
+[]
