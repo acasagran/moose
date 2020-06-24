@@ -1,0 +1,74 @@
+reset
+title 'Generic 2x2 grid and beam assembly model'
+
+# Nomenclature
+#
+# Grid  Block 1  Nodeset 1001
+# Tube1 Block 2  Nodeset 1002
+# Tube2 Block 3  Nodeset 1003
+#
+# Bottom nodes of all beams  Nodeset 1004
+# Top nodes of all beams     Nodeset 1005
+
+# Dimensions of Model
+#{bottom_offset=0.001}
+#{top_of_tube=1.999}
+#{elem_per_beam=1}
+#{pitch=0.05}
+#{assembly=2}
+
+# Create grid
+create vertex 0 {(bottom_offset+top_of_tube)/2.} 0
+create vertex {pitch} {(bottom_offset+top_of_tube)/2.} 0
+create vertex {pitch} {(bottom_offset+top_of_tube)/2.} {pitch}
+create vertex 0 {(bottom_offset+top_of_tube)/2.} {pitch}
+create curve vertex 1 2
+create curve vertex 2 3
+create curve vertex 3 4
+create curve vertex 4 1
+
+block 1 curve all
+nodeset 1001 vertex all
+#set copy_block_on_geometry_copy use_original
+#set copy_nodeset_on_geometry_copy use_original
+curve all interval {elem_per_beam}
+
+# Create Tube1
+create vertex 0 {bottom_offset} 0
+create vertex 0 {(bottom_offset+top_of_tube)/2.} 0
+create vertex 0 {top_of_tube} 0
+
+create curve vertex 9 10
+create curve vertex 10 11
+block 2 curve 5 6
+curve 5 to 6 interval {elem_per_beam}
+nodeset 1002 vertex 9 to 12
+merge vertex in nodeset 1002
+
+# Create Tube2
+create vertex {pitch} {bottom_offset} 0
+create vertex {pitch} {(bottom_offset+top_of_tube)/2.} 0
+create vertex {pitch} {top_of_tube} 0
+
+create curve vertex 13 14
+create curve vertex 14 15
+block 3 curve 7 8
+nodeset 1003 vertex 13 to 15
+set copy_block_on_geometry_copy use_original
+set copy_nodeset_on_geometry_copy use_original
+curve 7 8 copy move 0 0 {pitch}
+curve 7 8 copy move {-pitch} 0 {pitch}
+curve 7 to 12 interval {elem_per_beam}
+merge vertex in nodeset 1003
+block all elem bar2
+mesh curve all
+
+# merge nodes in Tube1 with grid
+merge vertex in nodeset 1001 with vertex in nodeset 1002
+
+# nodesets for top and bottom nodes
+nodeset 1004 vertex in curve all with y_coord < {bottom_offset*1.01}
+nodeset 1005 vertex in curve all with y_coord > {top_of_tube*0.99}
+
+
+export mesh 'grid_2x2_assm_base.e' overwrite

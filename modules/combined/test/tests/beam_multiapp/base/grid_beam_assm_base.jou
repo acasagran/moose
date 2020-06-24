@@ -1,0 +1,62 @@
+reset
+title 'Generic grid and beam assembly model'
+
+# Nomenclature
+#
+# Grid  Block 1  Nodeset 1001
+# Tube1 Block 2  Nodeset 1002
+# Tube2 Block 3  Nodeset 1003
+#
+# Bottom nodes of all beams  Nodeset 1004
+# Top nodes of all beams     Nodeset 1005
+
+# Dimensions of Model
+#{bottom_offset=0.001}
+#{top_of_tube=1.999}
+#{elem_per_beam=1}
+#{pitch=0.05}
+
+# Create grid
+create vertex 0 {(bottom_offset+top_of_tube)/2.} 0
+create vertex {pitch} {(bottom_offset+top_of_tube)/2.} 0
+create curve vertex 1 2
+
+block 1 curve all
+curve 1 interval {elem_per_beam}
+nodeset 1001 vertex all
+
+# Create Tube1
+create vertex 0 {bottom_offset} 0
+create vertex 0 {(bottom_offset+top_of_tube)/2.} 0
+create vertex 0 {top_of_tube} 0
+
+create curve vertex 3 4
+create curve vertex 4 5
+block 2 curve 2 3
+curve 2 to 3 interval {elem_per_beam}
+nodeset 1002 vertex 3 to 6
+merge vertex in nodeset 1002
+
+# Create Tube2
+create vertex {pitch} {bottom_offset} 0
+create vertex {pitch} {(bottom_offset+top_of_tube)/2.} 0
+create vertex {pitch} {top_of_tube} 0
+
+create curve vertex 7 8
+create curve vertex 8 9
+block 3 curve 4 5
+curve 4 to 5 interval {elem_per_beam}
+nodeset 1003 vertex 7 to 10
+merge vertex in nodeset 1003
+block all elem bar2
+mesh curve all
+
+# merge nodes in Tube1 with grid
+merge vertex in nodeset 1001 with vertex in nodeset 1002
+
+# nodesets for top and bottom nodes
+nodeset 1004 vertex in curve all with y_coord < {bottom_offset*1.01}
+nodeset 1005 vertex in curve all with y_coord > {top_of_tube*0.99}
+
+
+export mesh 'grid_beam_assm_base.e' overwrite
