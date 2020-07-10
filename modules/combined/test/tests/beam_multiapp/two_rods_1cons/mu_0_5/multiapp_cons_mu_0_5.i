@@ -144,7 +144,7 @@
     tangential_penalty = 1.2e6
     friction_coefficient = 0.5
     boundary = 1004
-    slave = 1003
+    secondary = 1003
     variable = disp_y
   [../]
 []
